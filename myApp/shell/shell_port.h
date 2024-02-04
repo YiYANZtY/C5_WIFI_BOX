@@ -26,5 +26,6 @@ void shell_Init(void);
 Shell *getShellIns(void);
 void shell_RunHld(void);
 void shellRxInt(void);
+void shellTxInt(void);
 
 #endif /*_SHELL_PORT_H_*/

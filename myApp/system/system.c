@@ -27,6 +27,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
     }
     if(huart == &huart2)
     {
+    	shellTxInt();
     }
 }
 

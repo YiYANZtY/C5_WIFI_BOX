@@ -101,7 +101,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
       sys_Run();
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+	  for(int i = 0; i < 1000; i++)
+	  {
+
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
