@@ -1,6 +1,7 @@
 #include "urc.h"
 #include "system.h"
 #include "hf_we100.h"
+#include "shell.h"
 #include "usart.h"
 #include "stdio.h"
 
@@ -60,7 +61,7 @@ void nurse_RevMsg(void)
     switch(g_NurseState)
     {
     case E_NURSE_IDLE:
-        ret = urc_RevFrame();
+        ret = urc_RevFrame(&g_urcIns);
         if(ret == E_SUCCESS)
         {
             g_NurseState = 1;
@@ -115,3 +116,9 @@ void nurse_TimeCnt(void)
         g_nurseRxTimeCnt++;
     }
 }
+
+S_URC_MSG *nurse_GetUrcIns(void)
+{
+	return &g_urcIns;
+}
+

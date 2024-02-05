@@ -11,7 +11,7 @@ lwrb_t rbShellRx;
 uint8_t rbShellRxBuf[RB_SHELL_RXBUF_SIZE + 1];
 uint8_t g_Uart2RxData = 0;
 
-#define RB_SHELL_TXBUF_SIZE 512
+#define RB_SHELL_TXBUF_SIZE 1024
 lwrb_t rbShellTx;
 uint8_t rbShellTxBuf[RB_SHELL_TXBUF_SIZE + 1];
 uint8_t g_shellTransmited = 1; //0:doing

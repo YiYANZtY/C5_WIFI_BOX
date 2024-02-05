@@ -5,9 +5,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#include "urc.h"
+
 void nurse_Init(void);
 void nurse_RunHld(void);
 void nurse_TimeCnt(void);
+S_URC_MSG *nurse_GetUrcIns(void);
 
 #ifdef __cplusplus
 }

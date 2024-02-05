@@ -6,19 +6,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-typedef struct _s_hf_device
-{
-    char protocol[8];
-    char cs[8];
-    char ip[16];
-    uint16_t port;
-    char ssid[32];
-    char password[32];
-    char mode[8];
-    char addr[16];
-    char mask[16];
-    char gateway[16];
-}S_HF_DEVICE;
+typedef struct _s_hf_device S_HF_DEVICE;
 
 //命令
 const char CMD_SET_CMDMODE[] = "+++";
@@ -87,9 +75,9 @@ uint32_t hf_WaitConnect(void)
     return urc_CheckHead(&rbHfRx, ASK_EVENT_DHCP_OK, strlen(ASK_EVENT_DHCP_OK));
 }
 
-static uint8_t step = 0;
-uint32_t hf_GetDeviceInfo(uint8_t cmd)
+static uint32_t hf_GetDeviceInfo(uint8_t cmd)
 {
+	static uint8_t step = 0;
     uint8_t len = 0, cnt = 0;
 
     memset(hfTxBuff, 0, sizeof(hfTxBuff));
@@ -511,4 +499,9 @@ uint8_t *hf_GetTxBuff(void)
 lwrb_t *hf_GetRbRxIns(void)
 {
     return &rbHfRx;
+}
+
+S_HF_DEVICE *hf_GetDevIns(void)
+{
+	return &g_hfDevInfo;
 }

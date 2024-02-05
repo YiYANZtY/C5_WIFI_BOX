@@ -1,17 +1,6 @@
 #include "urc.h"
 #include "system.h"
 
-typedef enum _e_urc_rx_state
-{
-    E_IDLE,
-    E_WAIT_END,
-    E_FINISH,
-    E_URC_RX_STATE_MAX,
-}E_URC_RX_STATE;
-
-S_URC_MSG *pUrcIns = NULL;
-E_URC_RX_STATE g_RxState = E_IDLE;
-
 uint32_t urc_CheckHead(lwrb_t *pRbIns, const char *str, uint8_t len)
 {
     uint8_t g_RxTmpBuf[8] = {0};
@@ -51,41 +40,41 @@ uint32_t urc_RevData(lwrb_t *pRbIns, const char *str, uint8_t len, char *rxbuf)
     return E_SUCCESS;
 }
 
-uint32_t urc_RevFrame(void)
+uint32_t urc_RevFrame(S_URC_MSG *urcIns)
 {
     uint32_t ret = E_FAIL;
 
-    switch(g_RxState)
+    switch(urcIns->state)
     {
     case E_IDLE:
-        ret = urc_CheckHead(pUrcIns->rbIns, pUrcIns->head, pUrcIns->headLen);
+        ret = urc_CheckHead(urcIns->rbIns, urcIns->head, urcIns->headLen);
         if(ret != E_SUCCESS)
         {
             break;
         }
-        memset(pUrcIns->frame, 0, pUrcIns->frameLen);
-        *pUrcIns->timeCnt = 0;
-        g_RxState = E_WAIT_END;
+        memset(urcIns->frame, 0, urcIns->frameLen);
+        *urcIns->timeCnt = 0;
+        urcIns->state = E_WAIT_END;
         break;
     case E_WAIT_END:
-        if(*pUrcIns->timeCnt > pUrcIns->timeout)
+        if(*urcIns->timeCnt > urcIns->timeout)
         {//超时
-            memset(pUrcIns->frame, 0, pUrcIns->frameLen);
-            g_RxState = E_IDLE;
+            memset(urcIns->frame, 0, urcIns->frameLen);
+            urcIns->state = E_IDLE;
             break;
         }
-        ret = urc_RevData(pUrcIns->rbIns, pUrcIns->end, pUrcIns->endLen, (char *)pUrcIns->frame);
+        ret = urc_RevData(urcIns->rbIns, urcIns->end, urcIns->endLen, (char *)urcIns->frame);
         if(ret != E_SUCCESS)
         {
             break;
         }
-        pUrcIns->finFlag = 1;
-        g_RxState = E_FINISH;
+        urcIns->finFlag = 1;
+        urcIns->state = E_FINISH;
         break;
     case E_FINISH:
-        if(pUrcIns->finFlag == 0)
+        if(urcIns->finFlag == 0)
         {
-            g_RxState = E_IDLE;
+            urcIns->state = E_IDLE;
             break;
         }
         return E_SUCCESS;
@@ -99,6 +88,5 @@ uint32_t urc_RevFrame(void)
 
 void urc_Init(S_URC_MSG *urcIns)
 {
-    pUrcIns = urcIns;
-    g_RxState = E_IDLE;
+	urcIns->state = E_IDLE;
 }
