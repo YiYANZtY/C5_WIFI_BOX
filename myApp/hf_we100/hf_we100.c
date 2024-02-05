@@ -2,6 +2,7 @@
 #include "urc.h"
 #include "system.h"
 #include "usart.h"
+#include "shell.h"
 #include "stm32g0xx_hal.h"
 #include "stdio.h"
 #include "stdlib.h"
@@ -23,6 +24,8 @@ const char ASK_CMDMODE[] = "+ok";
 const char ASK_OK[] = "+ok=";
 const char ASK_EVENT_CON_ON[] = "+EVENT=CON_ON";
 const char ASK_EVENT_DHCP_OK[] = "+EVENT=DHCP_OK";
+const char ASK_HEAD[] = "+";
+const char ASK_END[] = "\r\n";
 
 #define RB_HF_RXBUF_SIZE 64
 #define COMMUNICAT_TIMEOUT 2000
@@ -35,12 +38,14 @@ uint8_t rbHfRxBuf[RB_HF_RXBUF_SIZE + 1];
 //汉枫接受发送数据
 uint8_t hfTxBuff[HF_TXBUFF_SIZE] = {0};
 uint8_t hfRxBuff[HF_RXBUFF_SIZE] = {0};
+uint8_t tmpRxBuff[HF_RXBUFF_SIZE] = {0};
 
 //系统参数
 E_HF_STATUS g_hfStatus;
 uint32_t g_hfTimeCnt = 0;
 lwrb_t rbHfRx;
 S_HF_DEVICE g_hfDevInfo = {0};
+S_URC_MSG g_hfUrcIns = {0};
 
 static void hf_ResTimeCnt(void)
 {
@@ -402,6 +407,17 @@ void hf_Init(void)
     g_hfStatus = E_HF_REBOOT;
     lwrb_init(&rbHfRx, rbHfRxBuf, sizeof(rbHfRxBuf));
     HAL_UART_Receive_IT(&huart3, &g_Uart3RxData, 1);
+
+    g_hfUrcIns.head = (char *)ASK_HEAD;
+    g_hfUrcIns.headLen = strlen(ASK_HEAD);
+    g_hfUrcIns.end = (char *)ASK_END;
+    g_hfUrcIns.endLen = strlen(ASK_END);
+    g_hfUrcIns.frame = (char *)tmpRxBuff;
+    g_hfUrcIns.frameLen = sizeof(tmpRxBuff);
+    g_hfUrcIns.rbIns = &rbHfRx;
+    g_hfUrcIns.timeCnt = &g_hfTimeCnt;
+    g_hfUrcIns.timeout = COMMUNICAT_TIMEOUT;
+    urc_Init(&g_hfUrcIns);
 }
 
 void hf_RunHld(void)
@@ -460,6 +476,14 @@ void hf_RunHld(void)
         break;
     case E_HF_TIMEOUT:
     	break;
+    case E_HF_SHELL:
+		if(urc_RevFrame(&g_hfUrcIns) == E_SUCCESS)
+		{
+			shellWriteEndLine(getShellIns(), (char *)tmpRxBuff, sizeof(tmpRxBuff));
+			g_hfUrcIns.finFlag = 0;
+			g_hfStatus = E_HF_FINISH;
+		}
+		break;
     case E_HF_FINISH:
         break;
     default:

@@ -57,12 +57,10 @@ int hfSetDevCmd(int argc, char *argv[])
 	{
 		return 0;
 	}
-	HAL_UART_Transmit(&huart3, argv[1], strlen(argv[1]), 0xffff);
-	HAL_UART_Transmit(&huart3, "\r\n", strlen("\r\n"), 0xffff);
+	HAL_UART_Transmit(&huart3, (uint8_t *)argv[1], strlen(argv[1]), 0xffff);
+	HAL_UART_Transmit(&huart3, (uint8_t *)"\r\n", strlen("\r\n"), 0xffff);
 
-//	while(urc_RevFrame() == E_SUCCESS);
-//	shellWriteEndLine(shellGetCurrent(), pUrcIns->frame, strlen(pUrcIns->frame));
-//	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+	*hf_GetDeviceStatus() = E_HF_SHELL;
 
     return argc;
 }
