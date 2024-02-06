@@ -12,7 +12,7 @@ typedef enum _e_nurse_rx_state
     E_NURSE_RX_STATE_MAX,
 }E_NURSE_RX_STATE;
 
-#define NURSE_SEND_INTERVAL 1
+#define NURSE_SEND_INTERVAL 50
 #define NURSE_REV_TIMEOUT   100
 #define NURSE_RXBUF_SIZE    64
 #define NURSE_TXBUF_SIZE    64
@@ -44,16 +44,17 @@ void nurse_SendMsg(void)
     }
     g_nurseTimeCnt = 0;
 
-    if(g_urcIns.finFlag == 1)
+//    if(g_urcIns.finFlag == 1)//FIXME
     {
         sprintf((char *)g_NurseTxBuff, "%s%s%s%s%s%s%s%s",
-                NURSE_HEAD, NURSE_SET, "1", NURSE_SEPARATOR, g_urcIns.frame,
+                NURSE_HEAD, NURSE_SET, "1", NURSE_SEPARATOR, "even massage",
                 NURSE_SEPARATOR, NURSE_END, "\r\n");
         nurse_SendByte((uint8_t *)g_NurseTxBuff, strlen(g_NurseTxBuff));
-        g_urcIns.finFlag = 0;
+//        g_urcIns.finFlag = 0;
     }
 }
 
+//一帧报文数据接收完成，如果不解析不接收下一帧报文，如果此时报文较多，生成大于消费会导致队列溢出，这样就会接收到错误的报文。
 void nurse_RevMsg(void)
 {
     uint32_t ret = 0;
@@ -64,13 +65,17 @@ void nurse_RevMsg(void)
         ret = urc_RevFrame(&g_urcIns);
         if(ret == E_SUCCESS)
         {
-            g_NurseState = 1;
+        	strcat((char *)g_urcIns.frame, "\r\n");
+			shellWriteEndLine(getShellIns(), (char *)g_urcIns.frame, (int)g_urcIns.frameLen);
+            g_NurseState = E_NURSE_FINISH;
         }
         break;
     case E_NURSE_FINISH:
-        if(g_urcIns.finFlag == 0)
+//        if(g_urcIns.finFlag == 0)//FIXME
         {
-            g_NurseState = 0;
+        	g_urcIns.finFlag = 0;//FIXME
+        	memset(g_NurseRxBuff, 0, sizeof(g_NurseRxBuff));
+            g_NurseState = E_NURSE_IDLE;
         }
         break;
     default:
