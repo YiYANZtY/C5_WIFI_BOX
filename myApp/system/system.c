@@ -47,6 +47,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
 }
 
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+	volatile uint8_t tmp = 1;
+    if(huart == &huart1)
+    {
+    	tmp = tmp;
+    }
+    if(huart == &huart2)
+    {
+    	tmp = tmp;
+    }
+    if(huart == &huart3)
+    {
+    	tmp = tmp;
+    }
+}
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if(htim == &htim6)
