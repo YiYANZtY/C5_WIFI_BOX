@@ -501,8 +501,29 @@ void hf_TimeCnt(void)
 
 void hf_RxInt(void)
 {
-    HAL_UART_Receive_IT(&huart3, &g_Uart3RxData, 1);
+	HAL_StatusTypeDef ret;
+
+	ret = HAL_UART_Receive_IT(&huart3, &g_Uart3RxData, 1);
+	if(ret != HAL_OK)
+	{
+		if(ret == HAL_BUSY)
+		{
+			__HAL_UART_CLEAR_OREFLAG(&huart3);
+			huart3.RxState = HAL_UART_STATE_READY;
+			huart3.Lock = HAL_UNLOCKED;
+			ret = HAL_UART_Receive_IT(&huart3, &g_Uart3RxData, 1);
+		}
+	}
     lwrb_write(&rbHfRx, &g_Uart3RxData, sizeof(g_Uart3RxData));
+}
+
+void hf_RxErrorCb(void)
+{
+	if(__HAL_UART_GET_FLAG(&huart3, UART_FLAG_ORE) != RESET)
+	{
+		__HAL_UART_CLEAR_OREFLAG(&huart3);
+		HAL_UART_Receive_IT(&huart3, &g_Uart3RxData, 1);
+	}
 }
 
 E_HF_STATUS *hf_GetDeviceStatus(void)

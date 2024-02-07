@@ -60,7 +60,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
     }
     if(huart == &huart3)
     {
-    	tmp = tmp;
+    	hf_RxErrorCb();
     }
 }
 

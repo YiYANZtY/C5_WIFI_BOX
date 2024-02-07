@@ -47,6 +47,7 @@ E_HF_STATUS *hf_GetDeviceStatus(void);
 uint8_t *hf_GetRxBuff(void);
 uint8_t *hf_GetTxBuff(void);
 lwrb_t *hf_GetRbRxIns(void);
+void hf_RxErrorCb(void);
 S_HF_DEVICE *hf_GetDevIns(void);
 
 #ifdef __cplusplus
