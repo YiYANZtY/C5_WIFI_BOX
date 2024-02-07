@@ -12,7 +12,7 @@ typedef enum _e_nurse_rx_state
     E_NURSE_RX_STATE_MAX,
 }E_NURSE_RX_STATE;
 
-#define NURSE_SEND_INTERVAL 100
+#define NURSE_SEND_INTERVAL 10
 #define NURSE_REV_TIMEOUT   100
 #define NURSE_RXBUF_SIZE    64
 #define NURSE_TXBUF_SIZE    64

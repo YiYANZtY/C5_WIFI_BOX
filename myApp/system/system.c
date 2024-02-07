@@ -27,7 +27,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
     }
     if(huart == &huart2)
     {
-    	shellTxInt();
+    	shell_TxInt();
     }
 }
 
@@ -39,7 +39,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
     if(huart == &huart2)
     {
-        shellRxInt();
+        shell_RxInt();
     }
     if(huart == &huart3)
     {
@@ -56,7 +56,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
     }
     if(huart == &huart2)
     {
-    	tmp = tmp;
+    	shell_RxErrorCb();
     }
     if(huart == &huart3)
     {

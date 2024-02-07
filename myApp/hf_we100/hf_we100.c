@@ -57,6 +57,22 @@ static inline HAL_StatusTypeDef hf_SendByte(uint8_t *pData, uint16_t Size)
     return HAL_UART_Transmit(&huart3, pData, Size, 0xffff);
 }
 
+static inline void hf_StartReceiveIT(uint8_t *pData, uint16_t Size)
+{
+	HAL_StatusTypeDef ret;
+	ret = HAL_UART_Receive_IT(&huart3, pData, Size);
+	if(ret != HAL_OK)
+	{
+		if(ret == HAL_BUSY)
+		{//如果数据流较大，溢出会导致停止接收数据，无视溢出情况。
+			__HAL_UART_CLEAR_OREFLAG(&huart3);
+			huart3.RxState = HAL_UART_STATE_READY;
+			huart3.Lock = HAL_UNLOCKED;
+			ret = HAL_UART_Receive_IT(&huart3, pData, Size);
+		}
+	}
+}
+
 uint32_t hf_Reboot(void)
 {
     memset(hfTxBuff, 0, sizeof(hfTxBuff));
@@ -406,7 +422,7 @@ void hf_Init(void)
 {
     g_hfStatus = E_HF_REBOOT;
     lwrb_init(&rbHfRx, rbHfRxBuf, sizeof(rbHfRxBuf));
-    HAL_UART_Receive_IT(&huart3, &g_Uart3RxData, 1);
+	hf_StartReceiveIT(&g_Uart3RxData, 1);
 
     g_hfUrcIns.head = (char *)ASK_HEAD;
     g_hfUrcIns.headLen = strlen(ASK_HEAD);
@@ -501,24 +517,13 @@ void hf_TimeCnt(void)
 
 void hf_RxInt(void)
 {
-	HAL_StatusTypeDef ret;
-
-	ret = HAL_UART_Receive_IT(&huart3, &g_Uart3RxData, 1);
-	if(ret != HAL_OK)
-	{
-		if(ret == HAL_BUSY)
-		{
-			__HAL_UART_CLEAR_OREFLAG(&huart3);
-			huart3.RxState = HAL_UART_STATE_READY;
-			huart3.Lock = HAL_UNLOCKED;
-			ret = HAL_UART_Receive_IT(&huart3, &g_Uart3RxData, 1);
-		}
-	}
+	hf_StartReceiveIT(&g_Uart3RxData, 1);
     lwrb_write(&rbHfRx, &g_Uart3RxData, sizeof(g_Uart3RxData));
 }
 
 void hf_RxErrorCb(void)
 {
+	//如果数据流较大，溢出会导致停止接收数据，无视溢出情况。
 	if(__HAL_UART_GET_FLAG(&huart3, UART_FLAG_ORE) != RESET)
 	{
 		__HAL_UART_CLEAR_OREFLAG(&huart3);

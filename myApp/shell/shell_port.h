@@ -25,7 +25,8 @@ typedef struct shell_def Shell;
 void shell_Init(void);
 Shell *getShellIns(void);
 void shell_RunHld(void);
-void shellRxInt(void);
-void shellTxInt(void);
+void shell_RxInt(void);
+void shell_RxErrorCb(void);
+void shell_TxInt(void);
 
 #endif /*_SHELL_PORT_H_*/
