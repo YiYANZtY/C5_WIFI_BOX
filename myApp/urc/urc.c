@@ -88,5 +88,5 @@ uint32_t urc_RevFrame(S_URC_MSG *urcIns)
 
 void urc_Init(S_URC_MSG *urcIns)
 {
-	urcIns->state = E_IDLE;
+    urcIns->state = E_IDLE;
 }

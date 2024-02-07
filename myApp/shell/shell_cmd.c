@@ -13,7 +13,7 @@ int func(int argc, char *argv[])
     shellPrint(shellGetCurrent(), "%dparameter(s)\r\n", argc);
     for (int i = 1; i < argc; i++)
     {
-    	shellPrint(shellGetCurrent(), "%s\r\n", argv[i]);
+        shellPrint(shellGetCurrent(), "%s\r\n", argv[i]);
     }
 
     return argc;
@@ -22,30 +22,30 @@ SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN), fu
 
 int hfGetDevInfo(int argc, char *argv[])
 {
-	char str[16];
-	S_HF_DEVICE * pHfDevIns = hf_GetDevIns();
+    char str[16];
+    S_HF_DEVICE * pHfDevIns = hf_GetDevIns();
 
-	shellWriteEndLine(shellGetCurrent(), pHfDevIns->ssid, strlen(pHfDevIns->ssid));
-	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
-	shellWriteEndLine(shellGetCurrent(), pHfDevIns->password, strlen(pHfDevIns->password));
-	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
-	shellWriteEndLine(shellGetCurrent(), pHfDevIns->mode, strlen(pHfDevIns->mode));
-	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
-	shellWriteEndLine(shellGetCurrent(), pHfDevIns->addr, strlen(pHfDevIns->addr));
-	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
-	shellWriteEndLine(shellGetCurrent(), pHfDevIns->mask, strlen(pHfDevIns->mask));
-	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
-	shellWriteEndLine(shellGetCurrent(), pHfDevIns->gateway, strlen(pHfDevIns->gateway));
-	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
-	shellWriteEndLine(shellGetCurrent(), pHfDevIns->protocol, strlen(pHfDevIns->protocol));
-	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
-	shellWriteEndLine(shellGetCurrent(), pHfDevIns->cs, strlen(pHfDevIns->cs));
-	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
-	shellWriteEndLine(shellGetCurrent(), pHfDevIns->ip, strlen(pHfDevIns->ip));
-	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
-	itoa((int)pHfDevIns->port, str, 10);
-	shellWriteEndLine(shellGetCurrent(), str, strlen(str));
-	shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+    shellWriteEndLine(shellGetCurrent(), pHfDevIns->ssid, strlen(pHfDevIns->ssid));
+    shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+    shellWriteEndLine(shellGetCurrent(), pHfDevIns->password, strlen(pHfDevIns->password));
+    shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+    shellWriteEndLine(shellGetCurrent(), pHfDevIns->mode, strlen(pHfDevIns->mode));
+    shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+    shellWriteEndLine(shellGetCurrent(), pHfDevIns->addr, strlen(pHfDevIns->addr));
+    shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+    shellWriteEndLine(shellGetCurrent(), pHfDevIns->mask, strlen(pHfDevIns->mask));
+    shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+    shellWriteEndLine(shellGetCurrent(), pHfDevIns->gateway, strlen(pHfDevIns->gateway));
+    shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+    shellWriteEndLine(shellGetCurrent(), pHfDevIns->protocol, strlen(pHfDevIns->protocol));
+    shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+    shellWriteEndLine(shellGetCurrent(), pHfDevIns->cs, strlen(pHfDevIns->cs));
+    shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+    shellWriteEndLine(shellGetCurrent(), pHfDevIns->ip, strlen(pHfDevIns->ip));
+    shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
+    itoa((int)pHfDevIns->port, str, 10);
+    shellWriteEndLine(shellGetCurrent(), str, strlen(str));
+    shellWriteEndLine(shellGetCurrent(), "\r\n", strlen("\r\n"));
 
     return argc;
 }
@@ -53,14 +53,14 @@ SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN), hf
 
 int hfSetDevCmd(int argc, char *argv[])
 {
-	if(argc != 2)
-	{
-		return 0;
-	}
-	HAL_UART_Transmit(&huart3, (uint8_t *)argv[1], strlen(argv[1]), 0xffff);
-	HAL_UART_Transmit(&huart3, (uint8_t *)"\r\n", strlen("\r\n"), 0xffff);
+    if(argc != 2)
+    {
+        return 0;
+    }
+    HAL_UART_Transmit(&huart3, (uint8_t *)argv[1], strlen(argv[1]), 0xffff);
+    HAL_UART_Transmit(&huart3, (uint8_t *)"\r\n", strlen("\r\n"), 0xffff);
 
-	*hf_GetDeviceStatus() = E_HF_SHELL;
+    *hf_GetDeviceStatus() = E_HF_SHELL;
 
     return argc;
 }

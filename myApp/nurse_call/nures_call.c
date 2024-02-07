@@ -65,16 +65,16 @@ void nurse_RevMsg(void)
         ret = urc_RevFrame(&g_urcIns);
         if(ret == E_SUCCESS)
         {
-        	strcat((char *)g_urcIns.frame, "\r\n");
-			shellWriteEndLine(getShellIns(), (char *)g_urcIns.frame, (int)g_urcIns.frameLen);
+            strcat((char *)g_urcIns.frame, "\r\n");
+            shellWriteEndLine(getShellIns(), (char *)g_urcIns.frame, (int)g_urcIns.frameLen);
             g_NurseState = E_NURSE_FINISH;
         }
         break;
     case E_NURSE_FINISH:
 //        if(g_urcIns.finFlag == 0)//FIXME
         {
-        	g_urcIns.finFlag = 0;//FIXME
-        	memset(g_NurseRxBuff, 0, sizeof(g_NurseRxBuff));
+            g_urcIns.finFlag = 0;//FIXME
+            memset(g_NurseRxBuff, 0, sizeof(g_NurseRxBuff));
             g_NurseState = E_NURSE_IDLE;
         }
         break;
@@ -124,6 +124,6 @@ void nurse_TimeCnt(void)
 
 S_URC_MSG *nurse_GetUrcIns(void)
 {
-	return &g_urcIns;
+    return &g_urcIns;
 }
 

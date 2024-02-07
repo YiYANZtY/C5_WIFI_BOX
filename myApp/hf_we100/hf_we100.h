@@ -16,8 +16,8 @@ typedef enum _e_hf_status
     E_HF_WAIT_ASK_A,
     E_HF_WAIT_CMDMODE,
     E_HF_GET_DEVINFO,
-	E_HF_TIMEOUT,
-	E_HF_SHELL,
+    E_HF_TIMEOUT,
+    E_HF_SHELL,
     E_HF_FINISH,
     E_HF_STATUS_MAX,
 }E_HF_STATUS;
